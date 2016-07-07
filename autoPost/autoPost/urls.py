@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from twitter.views import search, post_tweet, update_trend
 from twitter.api import TweetList, twitter_startup, Searching
 
 BASE_URI_V1 = r'^rest/smm/v1/'
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(BASE_URI_V1+'tweet/$', TweetList.as_view()),
-    url(BASE_URI_V1+'search/$', Searching.as_view())
+    url(BASE_URI_V1+'tweet/$', post_tweet),
+    url(BASE_URI_V1+'search/$', search),
+    url(BASE_URI_V1+'trends/$', update_trend)
 ]
 
 print "in url"

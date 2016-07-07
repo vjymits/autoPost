@@ -2,27 +2,60 @@ __author__ = 'sharvija'
 import tweepy
 import threading
 import time
+from util import TwitterError, TwitterRateLimitExceed
 
 class TwitterWrapper():
     twApi = None
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        self.twApi= tweepy.API(auth)
+        try:
+            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+            auth.set_access_token(access_token, access_token_secret)
+            self.twApi= tweepy.API(auth)
+        except tweepy.RateLimitError as e:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
+
 
     def postTweet(self, tweetStr):
-        status = self.twApi.update_status(status=tweetStr)
+        try:
+            status = self.twApi.update_status(status=tweetStr)
+        except tweepy.RateLimitError:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
         return status
 
+    def replyTweet(self, text, user, tweetId):
+        try:
+            m = "@%s " %(user)+text
+            self.twApi.update_status(m, tweetId)
+        except tweepy.RateLimitError as e:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
+        return m
+
+
     def getTrends(self, woid ):
-        js=self.twApi.trends_place(woid)
+        try:
+            js=self.twApi.trends_place(woid)
+        except tweepy.RateLimitError as e:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
         return js
 
     def getApi(self):
         return self.twApi
 
     def search(self, query, maxTweets):
-        searched_tweets = [status for status in tweepy.Cursor(self.twApi.search, q=query).items(maxTweets)]
+        try:
+            searched_tweets = [status for status in tweepy.Cursor(self.twApi.search, q=query).items(maxTweets)]
+        except tweepy.RateLimitError as e:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
         return searched_tweets
 
 class TweetThread(threading.Thread):

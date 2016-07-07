@@ -70,7 +70,6 @@ class NotFound(BaseException):
 class ScripNotFound(NotFound):
     detail = "No such scrip found"
 
-
 class InvalidParam(Invalid):
     detail = "Invalid parameter given"
     status_code = 400
@@ -79,10 +78,38 @@ class InvalidValueType(Invalid):
     detail = "Invalid value type detected"
     status_code = 400
 
+class InvalidValue(Invalid):
+    detail = "Invalid value given."
+
 class RequiredParamNotFound(Invalid):
     detail = "Required parameter not found"
     status_code = 400
 
 class TSBadRequest(BaseException):
     status_code = 400
-    detail= "Bad Request"
+    detail= "Bad Request."
+
+class InternalError(BaseException):
+    status_code = 500
+    detail = "Internal server error occurs."
+
+class TwitterError(InternalError):
+    detail = "Error while accessing twitter api."
+
+class TwitterSearchError(TwitterError):
+    detail = "Error while searching on twitter."
+
+class TwitterApiNotAccessible(TwitterError):
+    detail = "Twitter api not accessible."
+
+class TweetError(TwitterError):
+    detail = "Error while posting tweet."
+
+class TwitterRateLimitExceed(TwitterError):
+    detail = "Reached maximum limit for now, please try after some time. "
+
+class NoSuchHandlerFound(TwitterError):
+    detail = "No such handler registered"
+
+class NoSearchResultFound(TwitterError):
+    detail = "No search result found, pls search again."
