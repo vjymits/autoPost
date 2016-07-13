@@ -50,6 +50,7 @@ class SearchResult(models.Model):
     id = models.AutoField(primary_key=True)
     query = models.CharField(max_length=40, db_index=True)
     screenName = models.CharField(max_length=15, db_index=True, unique=True)
+    userId = models.BigIntegerField(null=True, blank=True)
     tweetId = models.BigIntegerField(unique=True)
     text = models.CharField(max_length=200, blank=True, null=True)
     lang = models.CharField(max_length=10, default='en')
@@ -62,15 +63,28 @@ class SearchResult(models.Model):
         return "screenName: "+str(self.screenName)+" text: "+str(self.text)
 
 
+class AutoFollowPolicy(models.Model):
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(max_length=32, unique=True, editable=False,)
+    handler = models.ForeignKey(TwitterSecret, to_field='handler', db_column='handler', blank=True, null=True)
+    retainFollowers=models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+
 class AutoFollow(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(max_length=32, unique=True, editable=False,)
-    screenName = models.CharField(max_length=15, db_index=True, unique=True)
+    screenName = models.CharField(max_length=15, db_index=True)
+    userId=models.BigIntegerField(null=True, blank=True)
     handler = models.ForeignKey(TwitterSecret, to_field='handler', db_column='handler', blank=True, null=True)
+    status=models.CharField(max_length=20, default='new', db_index=True)
     created = models.DateTimeField(auto_now_add=True)
+    expireInDays = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together=('userId', 'handler')
 
     def __str__(self):
-        return "autoFollow: "+str(self.screenName)
+        return "screen: "+str(self.screenName)+" handler: "+str(self.handler)+" status: "+str(self.status)
 
 
 

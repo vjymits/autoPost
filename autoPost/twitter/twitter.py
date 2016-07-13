@@ -29,12 +29,30 @@ class TwitterWrapper():
     def replyTweet(self, text, user, tweetId):
         try:
             m = "@%s " %(user)+text
-            self.twApi.update_status(m, tweetId)
+            self.twApi.update_status(m, in_reply_to_status_id=tweetId)
         except tweepy.RateLimitError as e:
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:
             raise TwitterError(msg=e.message)
         return m
+
+    def followUserByUserId(self, userId):
+        try:
+            status = self.twApi.create_friendship(user_id=userId)
+        except tweepy.RateLimitError:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
+        return status
+
+    def followUsrsByScreenName(self, screenName):
+        try:
+            status = self.twApi.create_friendship()
+        except tweepy.RateLimitError:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
+        return status
 
 
     def getTrends(self, woid ):

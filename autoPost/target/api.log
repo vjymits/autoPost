@@ -1,0 +1,34 @@
+[10/Jul/2016 14:31:41] INFO [twitter.api:38] in post(), request_data: {u'text': u'Awesome!', u'handler': u'@vjymits', u'reply': {u'topic': u'#cloud'}}
+[10/Jul/2016 14:33:08] INFO [twitter.api:38] in post(), request_data: {u'text': u'Great!', u'handler': u'@vjymits', u'reply': {u'topic': u'#cloud'}}
+[10/Jul/2016 14:36:57] INFO [twitter.api:38] in post(), request_data: {u'text': u'Great!', u'handler': u'@vjymits', u'reply': {u'topic': u'#cloud'}}
+[11/Jul/2016 15:30:19] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! can I follow u.', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 15:40:19] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! can I follow u.', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 15:50:19] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! can I follow u.', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 16:00:19] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! can I follow u.', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 16:10:19] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! can I follow u.', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 16:24:11] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[11/Jul/2016 16:34:11] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 12:11:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 12:21:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 12:31:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 12:37:40] INFO [twitter.api:38] in post(), request_data: {u'text': u'forgot it, see how will son die while in hindi  #qayamat see: https://www.youtube.com/watch?v=uTmKYxfwTl4', u'handler': u'@vjymits', u'include': {u'trends': [{u'placeId': 23424848, u'rank': 1}, {u'placeId': 23424848, u'rank': 2}]}}
+[12/Jul/2016 12:41:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 12:51:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 13:01:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 13:07:40] INFO [twitter.api:38] in post(), request_data: {u'text': u'forgot it, see how will son die while in hindi  #qayamat see: https://www.youtube.com/watch?v=uTmKYxfwTl4', u'handler': u'@vjymits', u'include': {u'trends': [{u'placeId': 23424848, u'rank': 1}, {u'placeId': 23424848, u'rank': 2}]}}
+[12/Jul/2016 13:11:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 13:21:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 14:51:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:01:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:07:40] INFO [twitter.api:38] in post(), request_data: {u'text': u'forgot it, see how will son die while in hindi  #qayamat see: https://www.youtube.com/watch?v=uTmKYxfwTl4', u'handler': u'@vjymits', u'include': {u'trends': [{u'placeId': 23424848, u'rank': 1}, {u'placeId': 23424848, u'rank': 2}]}}
+[12/Jul/2016 15:11:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:21:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:31:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:37:40] INFO [twitter.api:38] in post(), request_data: {u'text': u'forgot it, see how will son die while in hindi  #qayamat see: https://www.youtube.com/watch?v=uTmKYxfwTl4', u'handler': u'@vjymits', u'include': {u'trends': [{u'placeId': 23424848, u'rank': 1}, {u'placeId': 23424848, u'rank': 2}]}}
+[12/Jul/2016 15:41:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 15:51:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 16:01:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 16:07:40] INFO [twitter.api:38] in post(), request_data: {u'text': u'forgot it, see how will son die while in hindi  #qayamat see: https://www.youtube.com/watch?v=uTmKYxfwTl4', u'handler': u'@vjymits', u'include': {u'trends': [{u'placeId': 23424848, u'rank': 1}, {u'placeId': 23424848, u'rank': 2}]}}
+[12/Jul/2016 16:11:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 16:21:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}
+[12/Jul/2016 16:31:03] INFO [twitter.api:38] in post(), request_data: {u'text': u'Wah! I like ur #Shair', u'handler': u'@vjymits', u'reply': {u'topic': u'#shair'}}

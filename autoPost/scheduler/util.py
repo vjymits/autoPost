@@ -1,15 +1,25 @@
 __author__ = 'sharvija'
 
 FREQUENCIES=(
-    ("Hourly", "hourly"),
-    ("Weekly", "weekly"),
-    ("Minutly", "minutly"),
-    ("Daily", "daily"),
-    ("Yearly", "yearly")
+    ("hourly", "Hourly"),
+    ("weekly", "Weekly"),
+    ("minutly", "Minutly"),
+    ("daily", "Daily"),
+    ("yearly", "Yearly")
 
 )
+
+valid_frequencies = ["hourly", "weekly", "minutly", "daily", "yearly"]
 
 SCHDULER_TYPE = (
     ("interval", "Interval"),
     ("cron", "Cron")
+)
+
+REST_METHODS=(
+    ("GET", "GET"),
+    ("POST", "POST"),
+    ("PUT", "PUT"),
+    ("DELETE", "DELETE"),
+    ("HEAD", "HEAD")
 )

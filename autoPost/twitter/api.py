@@ -1,11 +1,13 @@
 __author__ = 'sharvija'
 import twitter
-from models import TwitterSecret, Tweet, TwitterTrend, Location, SearchResult
+from models import TwitterSecret, Tweet, TwitterTrend, Location, SearchResult, AutoFollow
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import serializers
 import uuid
 import util, const
+import logging
+log = logging.getLogger(__name__)
 
 TW_API = {}
 
@@ -31,15 +33,22 @@ class TweetSrl(serializers.ModelSerializer):
 
 class TweetList(generics.ListAPIView):
     def post(self, request):
-        data = request.data
-        input = data.keys()
-        allowed = ['text', 'img', 'handler', 'include', 'reply']
-        mandatory = ['handler']
-        include = data.get('include', None)
-        reply = data.get('reply', None)
-        util.validate_mandatory_params(mandatory, input)
-        util.validate_allowed_params(allowed, input)
-        return TweetApi().tweet(include, reply, data)
+        try:
+            data = request.data
+            log.info("in post(), request_data: "+str(data))
+            print "typein req: "+str(type(data))
+            input = data.keys()
+            allowed = ['text', 'img', 'handler', 'include', 'reply']
+            mandatory = ['handler']
+            include = data.get('include', None)
+            reply = data.get('reply', None)
+            util.validate_mandatory_params(mandatory, input)
+            print "validation of mandatory Done."
+            util.validate_allowed_params(allowed, input)
+            print "validation of valid Done."
+            return TweetApi().tweet(include, reply, data)
+        except Exception as e:
+            print("errrrr"+str(e))
 
     def get(self, request):
         print "calling get()"
@@ -135,34 +144,42 @@ class TweetApi:
 
     def tweet(self, include, reply, data):
         tweet=data.get("text", "")
+        print "In tweet(), "
         h = data.get('handler', None)
         wrap = TW_API.get(h, None)
-        if include:
-            inObj = Includable(include)
-            tweet = tweet+" "+str(inObj)
-        if reply:
-            q=reply.get('topic', None)
-            sr_list=SearchResult.objects.filter(query=q, autoPostStatus=None)[:1]
-            print "length sr_list: "+str(sr_list)
-            if len(sr_list)<1:
-                search = Searching()
-                search.search(data.get('handler'), reply.get('topic'))
-            print "reply input: "+str(reply)
-            r = Reply(reply)
-            tweetId = r.getTweetId()
-            screenName = r.getScreenName()
-            tweet=wrap.replyTweet(tweet, screenName, tweetId)
-            reply={"screenName": screenName, "tweetId": tweetId}
+        try:
+            if include:
+                inObj = Includable(include)
+                tweet = tweet+" "+str(inObj)
+            if reply:
+                q=reply.get('topic', None)
+                sr_list=SearchResult.objects.filter(query=q, autoPostStatus=None)[:1]
+                print "length sr_list: "+str(sr_list)
+                if len(sr_list)<1:
+                    search = Searching()
+                    search.search(data.get('handler'), reply.get('topic'))
+                print "reply input: "+str(reply)
+                r = Reply(reply)
+                tweetId = r.getTweetId()
+                screenName = r.getScreenName()
+                tweet=wrap.replyTweet(tweet, screenName, tweetId)
+                reply={"screenName": screenName, "tweetId": tweetId}
 
-        else:
-            wrap.postTweet(tweet)
-        tw = Tweet()
-        secret = TwitterSecret.objects.get(handler=h)
-        tw.handler=secret
-        tw.state="updated"
-        tw.uuid= uuid.uuid4()
-        tw.text=tweet
-        tw.save()
+            else:
+                print "about to post a tweet..."
+
+                wrap.postTweet(tweet)
+
+            print ("came here")
+            tw = Tweet()
+            secret = TwitterSecret.objects.get(handler=h)
+            tw.handler=secret
+            tw.state="updated"
+            tw.uuid= uuid.uuid4()
+            tw.text=tweet
+            tw.save()
+        except Exception as e:
+            print "An err while posting tweet"+str(e)
         return Response({'tweet':tweet, "reply":reply})
 
 class Searching(generics.ListAPIView):
@@ -202,8 +219,9 @@ class Searching(generics.ListAPIView):
         try:
             sr = SearchResult()
             sr.screenName = tweet.user.screen_name
+            sr.userId = tweet.user.id
             sr.tweetId = tweet.id
-            sr.text = tweet.text
+            #sr.text = tweet.text
             sr.query=query
             #sr.tweetedTime = tweet.created_at
             sr.lang = tweet.lang
@@ -269,7 +287,45 @@ class Reply:
     def getTweetId(self):
         return self.tweetId
 
+class AutoFollowApi:
+
+    def follow(self,req):
+        inputData=req.data
+        valid =['query', 'totalUsers', 'unFollowUsers', 'trends', 'handler']
+        mandatory = ['handler']
+        util.validate_allowed_params(valid, inputData.keys())
+        util.validate_mandatory_params(mandatory, inputData.keys())
+        h=inputData.get('handler', None)
+        if h is None:
+            raise util.InvalidValue(detail="Handler can not be null.")
+        q=inputData.get('query', None)
+        if q is None:
+            trends = inputData.get('trends')
+            tr=util.validate_mandatory_params(['placeId', 'rank'], trends.keys())
+            q=tr.name
+        s = SearchResult.objects.filter(query=q).exclude(id__in= AutoFollow.objects.filter(
+            handler=h, status = 'new'))[:1]
+        if len(s)==0:
+            search =Searching()
+            search.search(h, q, maxTweets=100)
+            s = SearchResult.objects.filter(query=q).exclude(id__in= AutoFollow.objects.filter(
+            handler=h))[:1]
+        if len(s) >= 1:
+            result = s[0]
+        else:
+            raise util.NoSearchResultFound("No search result Found for topic: "+str(q))
+        f=AutoFollow()
+        f.handler=h
+        f.screenName = result.screenName
+        f.status="followed"
+
+
+
+    def UnFollow(self):
+        pass
+
 def twitter_startup():
     print "in tw startup"
     fill_tw_api()
+
 
