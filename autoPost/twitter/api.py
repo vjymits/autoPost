@@ -101,7 +101,7 @@ class TrendsApi:
     def fill_trends(self):
         all = Location.objects.all()
         for one in all:
-            print "location: "+str(one.placeId)
+            #print "location: "+str(one.placeId)
             self.updateTrendsInDB(one.placeId)
         return Response({"all trends updated"})
 
@@ -112,7 +112,7 @@ class TrendsApi:
             #data= json.loads(res)
             print (str(res))
             trends = res[0].get('trends', None)
-            print("trends: "+str(trends))
+            #print("trends: "+str(trends))
             if trends is None:
                 return
             TwitterTrend.objects.filter(location=placeId).delete()
@@ -125,9 +125,9 @@ class TrendsApi:
                     tr.tweetVolume=trend.get('tweet_volume')
                     tr.rank = i
                     i=i+1
-                    print "location: "+str(tr.location)
+                    #print "location: "+str(tr.location)
                     #print "name of trend "+str(tr.name)
-                    print "rank: "+str(tr.rank)
+                    #print "rank: "+str(tr.rank)
                     tr.save()
                 except Exception as e:
                     print "skip err "+str(e)
@@ -153,7 +153,7 @@ class TweetApi:
 
     def tweet(self, include, reply, data):
         tweet=data.get("text", "")
-        print "In tweet(), "
+        log.info("In tweet(), ")
         h = data.get('handler', None)
         wrap = TW_API.get(h, None)
         try:
@@ -163,11 +163,11 @@ class TweetApi:
             if reply:
                 q=reply.get('topic', None)
                 sr_list=SearchResult.objects.filter(query=q, autoPostStatus=None)[:1]
-                print "length sr_list: "+str(sr_list)
+                log.info("length sr_list: "+str(sr_list))
                 if len(sr_list)<1:
                     search = Searching()
                     search.search(data.get('handler'), reply.get('topic'))
-                print "reply input: "+str(reply)
+                log.info("reply input: "+str(reply))
                 r = Reply(reply)
                 tweetId = r.getTweetId()
                 screenName = r.getScreenName()
@@ -175,13 +175,13 @@ class TweetApi:
                 reply={"screenName": screenName, "tweetId": tweetId}
 
             else:
-                print "about to post a tweet..."
+                log.info("about to post a tweet...")
                 try:
                     wrap.postTweet(tweet)
                 except Exception as e:
-                    print "error in posting tweet, "+str(e.msg)
+                    log.info("error in posting tweet, "+str(e.msg))
 
-            print ("came here")
+            log.info(("came here"))
             tw = Tweet()
             secret = TwitterSecret.objects.get(handler=h)
             tw.handler=secret
@@ -190,7 +190,7 @@ class TweetApi:
             tw.text=tweet
             tw.save()
         except Exception as e:
-            print "An err while posting tweet"+str(e)
+            log.info("An err while posting tweet"+str(e))
         return Response({'tweet':tweet, "reply":reply})
 
 class Searching(generics.ListAPIView):
@@ -209,7 +209,7 @@ class Searching(generics.ListAPIView):
             print(str(e))
 
     def post(self, request):
-        print "in post..."
+        log.info("in post...")
         valid=['query', 'maxTweets', 'maxUsers', 'handler']
         mandatory=['query', 'handler']
         data = request.data
@@ -240,7 +240,7 @@ class Searching(generics.ListAPIView):
 
         except Exception as e:
             if e[0] == 1366:
-                print "Error no 1366, removing text"
+                log.info("Error no 1366, removing text")
                 sr.text=None
                 sr.save()
             else:
@@ -259,12 +259,12 @@ class Searching(generics.ListAPIView):
                     self.saveResult(tweet, query)
                     newUsersCount=newUsersCount+1
                 except Exception as e:
-                    print("an error: "+str(e))
+                    log.info("an error: "+str(e))
         except util.TwitterError as e:
-            print("an err occurred")
+            log.info("an err occurred")
             raise e
         except util.TwitterRateLimitExceed:
-            print("An err occurred, rate limit exceed")
+            log.info("An err occurred, rate limit exceed")
             raise util.TwitterRateLimitExceed(handler=handler)
         return {"rowAdded": newUsersCount, "tweetCount": tweetCount}
 
@@ -277,16 +277,16 @@ class Reply:
     def __init__(self,inputData):
         util.validate_allowed_params(self.valid, inputData.keys())
         topic=inputData.get('topic', None)
-        print "in reply topic: "+str(topic)
+        log.info("in reply topic: "+str(topic))
         try:
             SRList = SearchResult.objects.filter(query=topic, autoPostStatus=None)[:1]
-            print "length of sr list: "+str(len(SRList))
+            log.info("length of sr list: "+str(len(SRList)))
             if len(SRList)<1:
                 raise util.NoSearchResultFound(topic=topic)
         except SearchResult.DoesNotExist:
-            print "error..."
+            log.info("error...")
             raise util.NoSearchResultFound(msg='No search result found for query: '+str(topic))
-        print("going ahead...")
+        log.info("going ahead...")
         SR = SRList[0]
         self.tweetId = SR.tweetId
         self.screenName = SR.screenName
@@ -302,7 +302,7 @@ class Reply:
 class AutoFollowApi:
 
     def follow(self,req):
-        print("in follow()")
+        log.info("in follow()")
         inputData=req.data
         valid =['query', 'retain', 'trend', 'handler', 'searchType']
         mandatory = ['handler']
@@ -310,6 +310,7 @@ class AutoFollowApi:
         util.validate_mandatory_params(mandatory, inputData.keys())
         h=inputData.get('handler', None)
         st = inputData.get('searchType', 'tweet')
+        log.info("handler: "+str(h))
         retain = inputData.get('retain', 0)
         if h is None:
             raise util.InvalidValue(detail="Handler can not be null.")
@@ -336,7 +337,7 @@ class AutoFollowApi:
 
 
 def twitter_startup():
-    print "in tw startup"
+    log.info( "in tw startup")
     fill_tw_api()
 
 
