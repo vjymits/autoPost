@@ -10,7 +10,7 @@ class TwitterWrapper():
         try:
             auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
             auth.set_access_token(access_token, access_token_secret)
-            self.twApi= tweepy.API(auth)
+            self.twApi= tweepy.API(auth, wait_on_rate_limit=True)
         except tweepy.RateLimitError as e:
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:
@@ -45,9 +45,18 @@ class TwitterWrapper():
             raise TwitterError(msg=e.message)
         return status
 
-    def followUsrsByScreenName(self, screenName):
+    def followUserByScreenName(self, screenName):
         try:
-            status = self.twApi.create_friendship()
+            status = self.twApi.create_friendship(screen_name=screenName)
+        except tweepy.RateLimitError:
+            raise TwitterRateLimitExceed()
+        except tweepy.TweepError as e:
+            raise TwitterError(msg=e.message)
+        return status
+
+    def unFollowByScreenName(self, screenName):
+        try:
+            status = self.twApi.destroy_friendship(screen_name=screenName)
         except tweepy.RateLimitError:
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:
@@ -67,9 +76,17 @@ class TwitterWrapper():
     def getApi(self):
         return self.twApi
 
-    def search(self, query, maxTweets):
+    def search(self, query, maxTweets, sinceId=0):
+        print("Gonna to do search, query: "+str(query))
+
         try:
-            searched_tweets = [status for status in tweepy.Cursor(self.twApi.search, q=query).items(maxTweets)]
+            if sinceId==0:
+                searched_tweets = [status for status in tweepy.Cursor(self.twApi.search, q=query,
+                                                                      ).items(maxTweets)]
+            else:
+                searched_tweets = [status for status in tweepy.Cursor(self.twApi.search, q=query,
+                                             since_id=sinceId).items(maxTweets)]
+
         except tweepy.RateLimitError as e:
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:

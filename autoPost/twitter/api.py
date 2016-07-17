@@ -4,6 +4,7 @@ from models import TwitterSecret, Tweet, TwitterTrend, Location, SearchResult, A
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import serializers
+import manager
 import uuid
 import util, const
 import logging
@@ -133,12 +134,20 @@ class TrendsApi:
         except Exception as e:
             print(e.message)
 
+
     def getTrend(self, placeId, rank):
         try:
             Trend= TwitterTrend.objects.get(location= placeId, rank = rank)
         except TwitterTrend.DoesNotExist:
             Trend=None
         return Trend
+
+    @classmethod
+    def getTrendsByDict(cls, trend={"placeId":1, "rank":1}):
+        util.validate_mandatory_params(['placeId', 'rank'], trend.keys())
+        t=cls().getTrend(trend.get('placeId',1), trend.get('rank', 1))
+        return t
+
 
 class TweetApi:
 
@@ -167,8 +176,10 @@ class TweetApi:
 
             else:
                 print "about to post a tweet..."
-
-                wrap.postTweet(tweet)
+                try:
+                    wrap.postTweet(tweet)
+                except Exception as e:
+                    print "error in posting tweet, "+str(e.msg)
 
             print ("came here")
             tw = Tweet()
@@ -235,12 +246,12 @@ class Searching(generics.ListAPIView):
             else:
                 raise e
 
-    def search(self, handler, query, maxTweets=20):
+    def search(self, handler, query, maxTweets=20, sinceId=0):
         try:
             wrap = TW_API.get(handler, None)
             if wrap is None:
                 raise util.NoSuchHandlerFound(handler=handler)
-            listOfTweets = wrap.search(query, maxTweets)
+            listOfTweets = wrap.search(query, maxTweets, sinceId)
             tweetCount = len(listOfTweets)
             newUsersCount=0
             for tweet in listOfTweets:
@@ -256,6 +267,7 @@ class Searching(generics.ListAPIView):
             print("An err occurred, rate limit exceed")
             raise util.TwitterRateLimitExceed(handler=handler)
         return {"rowAdded": newUsersCount, "tweetCount": tweetCount}
+
 
 class Reply:
     valid = ['topic', 'tweetNo']
@@ -290,42 +302,42 @@ class Reply:
 class AutoFollowApi:
 
     def follow(self,req):
+        print("in follow()")
         inputData=req.data
-        valid =['query', 'totalUsers', 'unFollowUsers', 'trends', 'handler']
+        valid =['query', 'retain', 'trend', 'handler', 'searchType']
         mandatory = ['handler']
         util.validate_allowed_params(valid, inputData.keys())
         util.validate_mandatory_params(mandatory, inputData.keys())
         h=inputData.get('handler', None)
+        st = inputData.get('searchType', 'tweet')
+        retain = inputData.get('retain', 0)
         if h is None:
             raise util.InvalidValue(detail="Handler can not be null.")
         q=inputData.get('query', None)
         if q is None:
-            trends = inputData.get('trends')
-            tr=util.validate_mandatory_params(['placeId', 'rank'], trends.keys())
-            q=tr.name
-        s = SearchResult.objects.filter(query=q).exclude(id__in= AutoFollow.objects.filter(
-            handler=h, status = 'new'))[:1]
-        if len(s)==0:
-            search =Searching()
-            search.search(h, q, maxTweets=100)
-            s = SearchResult.objects.filter(query=q).exclude(id__in= AutoFollow.objects.filter(
-            handler=h))[:1]
-        if len(s) >= 1:
-            result = s[0]
-        else:
-            raise util.NoSearchResultFound("No search result Found for topic: "+str(q))
-        f=AutoFollow()
-        f.handler=h
-        f.screenName = result.screenName
-        f.status="followed"
+            trend = inputData.get('trend', None)
+            if trend is None:
+                raise util.InvalidValue(detail="Either query or trend has to be passed.")
+            q=TrendsApi.getTrendsByDict(trend).name
+        controller = manager.AutoFollowController(h, q)
+        followData=unFollowData={}
+        if st == 'tweet':
+           followData= controller.followByTweet()
+        if retain>0:
+           unFollowData=controller.clearFollowing(retain)
+        return Response({"follow":followData, "unFollow":unFollowData})
+
 
 
 
     def UnFollow(self):
         pass
 
+
+
 def twitter_startup():
     print "in tw startup"
     fill_tw_api()
+
 
 

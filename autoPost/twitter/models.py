@@ -48,7 +48,7 @@ class TwitterTrend(models.Model):
 
 class SearchResult(models.Model):
     id = models.AutoField(primary_key=True)
-    query = models.CharField(max_length=40, db_index=True)
+    query = models.CharField(max_length=256, db_index=True)
     screenName = models.CharField(max_length=15, db_index=True, unique=True)
     userId = models.BigIntegerField(null=True, blank=True)
     tweetId = models.BigIntegerField(unique=True)
@@ -76,9 +76,11 @@ class AutoFollow(models.Model):
     screenName = models.CharField(max_length=15, db_index=True)
     userId=models.BigIntegerField(null=True, blank=True)
     handler = models.ForeignKey(TwitterSecret, to_field='handler', db_column='handler', blank=True, null=True)
+    tweetId = models.BigIntegerField(default=0)
+    query = models.CharField(max_length=256, null=True, blank=True)
     status=models.CharField(max_length=20, default='new', db_index=True)
     created = models.DateTimeField(auto_now_add=True)
-    expireInDays = models.IntegerField(default=0)
+    expireInDays = models.IntegerField(default=30)
 
     class Meta:
         unique_together=('userId', 'handler')

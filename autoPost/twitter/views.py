@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from api import Searching, TweetList, TrendsApi
+from api import Searching, TweetList, TrendsApi, AutoFollowApi
 from models import SearchResult, AutoFollow
 
 @api_view(['POST'])
@@ -20,7 +20,7 @@ def update_trend(req):
 
 @api_view(['POST','PUT'])
 def auto_follow(req):
-    pass
+    return AutoFollowApi().follow(req)
 
 @api_view(['POST','PUT', 'GET', 'DELETE'])
 def test(req):
