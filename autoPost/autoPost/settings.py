@@ -81,8 +81,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'auto_post',
-        'USER': 'arrow',
-        'PASSWORD': 'arrow'
+        'USER': 'root',
+        'PASSWORD': 'test',
+        'HOST':'127.0.0.1',
+        'PORT':'3306'
     }
 
 }
