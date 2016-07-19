@@ -33,9 +33,8 @@ class TweetSrl(serializers.ModelSerializer):
         fields = ('text', 'img', 'handler', )
 
 class TweetList(generics.ListAPIView):
-    def post(self, request):
+    def post(self, data):
         try:
-            data = request.data
             log.info("in post(), request_data: "+str(data))
             print "typein req: "+str(type(data))
             input = data.keys()
@@ -208,11 +207,10 @@ class Searching(generics.ListAPIView):
         except Exception as e:
             print(str(e))
 
-    def post(self, request):
+    def post(self, data):
         log.info("in post...")
         valid=['query', 'maxTweets', 'maxUsers', 'handler']
         mandatory=['query', 'handler']
-        data = request.data
         input =data.keys()
         util.validate_mandatory_params(mandatory, input)
         util.validate_allowed_params(valid, input)
@@ -301,9 +299,8 @@ class Reply:
 
 class AutoFollowApi:
 
-    def follow(self,req):
+    def follow(self,inputData):
         log.info("in follow()")
-        inputData=req.data
         valid =['query', 'retain', 'trend', 'handler', 'searchType']
         mandatory = ['handler']
         util.validate_allowed_params(valid, inputData.keys())
@@ -327,7 +324,6 @@ class AutoFollowApi:
         if retain>0:
            unFollowData=controller.clearFollowing(retain)
         return Response({"follow":followData, "unFollow":unFollowData})
-
 
 
 

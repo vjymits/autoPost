@@ -16,6 +16,14 @@ SCHDULER_TYPE = (
     ("cron", "Cron")
 )
 
+SCH_ACTIONS=(
+    ("tweet", "tweet"),
+    ("search", "search"),
+    ("follow", "follow")
+
+)
+
+
 REST_METHODS=(
     ("GET", "GET"),
     ("POST", "POST"),

@@ -5,8 +5,8 @@
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1:3306/auto_post</jdbc-url>
-      <user-name>arrow</user-name>
-      <user-password>dfcbdfd8dfd8dfc5dfdd</user-password>
+      <user-name>root</user-name>
+      <user-password>dfdedfcfdfd9dfde</user-password>
       <libraries />
     </data-source>
   </component>
