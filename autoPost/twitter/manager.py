@@ -71,18 +71,15 @@ class AutoFollowController:
             user = tweet.screenName
             lastTweetId = tweet.tweetId
             alreadyFollow = self.doIAutoFollow(user)
-        try:
-            afObj= self.constructAFObj(tweet)
-            print "about to add new"
-            afObj.save()
-            print "added as a new"
-            wrap=api.TW_API.get(self.h)
-            wrap.followUserByScreenName(tweet.screenName)
-            afObj.status="following"
-            afObj.save()
-        except Exception as e:
-            print "an err while following"+str(e.message)
-            raise e
+            try:
+                afObj= self.constructAFObj(tweet)
+                wrap=api.TW_API.get(self.h)
+                wrap.followUserByScreenName(tweet.screenName)
+                afObj.status="following"
+                afObj.save()
+            except Exception as e:
+                print "an err while following"+str(e.message)
+                raise e
         return {"tweetId":lastTweetId, "following":tweet.screenName, "query":self.q, "handler":self.h}
 
     def constructAFObj(self, tweet):

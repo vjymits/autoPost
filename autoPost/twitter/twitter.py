@@ -88,8 +88,10 @@ class TwitterWrapper():
                                              since_id=sinceId).items(maxTweets)]
 
         except tweepy.RateLimitError as e:
+            print("Rate limit error")
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:
+            print("Tweep error")
             raise TwitterError(msg=e.message)
         return searched_tweets
 
