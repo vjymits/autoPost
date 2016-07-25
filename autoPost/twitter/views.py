@@ -22,6 +22,10 @@ def update_trend(req):
 def auto_follow(req):
     return AutoFollowApi().follow(req.data)
 
+@api_view(['POST', 'PUT'])
+def un_follow(req):
+    return AutoFollowApi().unFollow(req.data)
+
 @api_view(['POST','PUT', 'GET', 'DELETE'])
 def test(req):
     print "in test()"

@@ -49,7 +49,7 @@ class SchedulerApi:
             job= default_sch.add_job(r.call, trigger='interval', id = sch_id, years=every,
                                      replace_existing=True)
         all = len(default_sch.get_jobs())
-        print("all jobs: "+str(default_sch.get_jobs()))
+        log.info("all jobs: "+str(default_sch.get_jobs()))
         return {"jobId": str(uuid), "noOfJobs": all}
 
     def createActScheduler(self, data):
@@ -83,14 +83,14 @@ class SchedulerApi:
             job= default_sch.add_job(a.execute, trigger='interval', id = sch_id, years=every,
                                      replace_existing=True)
         all = len(default_sch.get_jobs())
-        print("all jobs: "+str(default_sch.get_jobs()))
+        log.info("all jobs: "+str(default_sch.get_jobs()))
         return {"jobId": str(uuid), "noOfJobs": all}
 
     def deleteScheduler(self, id):
-        print "removing sch"
+        log.info("removing sch")
         j = default_sch.get_job(id)
         j.remove()
-        print("all jobs: "+str(default_sch.get_jobs()))
+        log.info("all jobs: "+str(default_sch.get_jobs()))
 
     def updateScheduler(self):
         pass
@@ -105,7 +105,7 @@ class RestCall:
             #d=ast.literal_eval(requestBody)
             #print ("type, d: "+str(type(d)))
             self.requestBody = json.dumps(ast.literal_eval(requestBody))
-            print "type after : "+str(type(self.requestBody))
+            log.info("type after : "+str(type(self.requestBody)))
         self.responseBody=None
         self.responseCode=200
         if headers:
@@ -119,40 +119,40 @@ class RestCall:
     def call(self):
         try:
             res=None
-            print "URI: "+self.uri+" method: "+self.method
+            log.info("URI: "+self.uri+" method: "+self.method)
             if self.method==REST_METHODS[0][0]:
-                print("Method is GET")
+                log.info("Method is GET")
                 res=requests.get(self.uri, data=self.requestBody, headers =self.headers)
                 self.responseBody=res.json()
-                print str(res.status_code)
+                #print str(res.status_code)
                 self.responseCode=res.status_code
 
             elif self.method==REST_METHODS[1][0]:
-                print("Method is POST")
+                log.info("Method is POST")
                 res=requests.post(self.uri, data=self.requestBody, headers =self.headers)
                 self.responseBody=res.json()
                 self.responseCode=res.status_code
 
             elif self.method==REST_METHODS[2][0]:
-                print("Method is PUT")
+                log.info("Method is PUT")
                 res=requests.put(self.uri, data=self.requestBody, headers =self.headers)
                 self.responseBody=res.json()
                 self.responseCode=res.status_code
 
             elif self.method==REST_METHODS[3][0]:
-                print("Method is DELETE")
+                log.info("Method is DELETE")
                 res=requests.delete(self.uri, data=self.requestBody, headers =self.headers)
                 self.responseBody=res.json()
                 self.responseCode=res.status_code
 
             elif self.method==REST_METHODS[4][0]:
-                print("Method is HEAD")
+                log.info("Method is HEAD")
                 res=requests.head(self.uri)
                 self.responseBody=res.json()
                 self.responseCode=res.status_code
         except Exception as e:
-            print "status code: "+str(res.status_code)
-            print("An error occured "+str(e))
+            log.info("status code: "+str(res.status_code))
+            log.info("An error occured "+str(e))
 
 class AutoPostAct:
     def __init__(self, act, params):

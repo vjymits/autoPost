@@ -4,6 +4,9 @@ import threading
 import time
 from util import TwitterError, TwitterRateLimitExceed
 
+import logging
+log = logging.getLogger(__name__)
+
 class TwitterWrapper():
     twApi = None
     def __init__(self, consumer_key, consumer_secret, access_token, access_token_secret):
@@ -77,7 +80,7 @@ class TwitterWrapper():
         return self.twApi
 
     def search(self, query, maxTweets, sinceId=0):
-        print("Gonna to do search, query: "+str(query))
+        log.info("Gonna to do search, query: "+str(query))
 
         try:
             if sinceId==0:
@@ -88,10 +91,10 @@ class TwitterWrapper():
                                              since_id=sinceId).items(maxTweets)]
 
         except tweepy.RateLimitError as e:
-            print("Rate limit error")
+            log.info("Rate limit error")
             raise TwitterRateLimitExceed()
         except tweepy.TweepError as e:
-            print("Tweep error")
+            log.info("Tweep error")
             raise TwitterError(msg=e.message)
         return searched_tweets
 
