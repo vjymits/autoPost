@@ -98,6 +98,27 @@ class TwitterWrapper():
             raise TwitterError(msg=e.message)
         return searched_tweets
 
+    def sendDirectMessage(self, screenName, msg):
+        """
+        send direct msg
+        :param screenName:
+        :param msg:
+        :return:
+        """
+        try:
+            ret= self.twApi.send_direct_message(screen_name = screenName, text=msg)
+        except tweepy.TweepError as e:
+            log.error("Tweep Error..")
+            raise TwitterError("Tweep error while sending DM.")
+        return ret
+    def getAllFollowers(self):
+        """
+        retruns list of all user who follows
+        :return:
+        """
+
+
+
 class TweetThread(threading.Thread):
 
     def __init__(self, twWrap, tweetList=[], wait=0):

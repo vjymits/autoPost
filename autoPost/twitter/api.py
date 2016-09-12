@@ -178,7 +178,7 @@ class TweetApi:
                 try:
                     wrap.postTweet(tweet)
                 except Exception as e:
-                    log.info("error in posting tweet, "+str(e.msg))
+                    log.info("error in posting tweet, "+str(e))
 
             log.info(("came here"))
             tw = Tweet()

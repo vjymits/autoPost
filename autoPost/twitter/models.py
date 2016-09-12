@@ -88,7 +88,14 @@ class AutoFollow(models.Model):
     def __str__(self):
         return "screen: "+str(self.screenName)+" handler: "+str(self.handler)+" status: "+str(self.status)
 
+class DirectMsg(models.Model):
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(max_length=32, unique=True, editable=False,)
+    screenName = models.CharField(max_length=15, db_index=True)
+    userId=models.BigIntegerField(null=True, blank=True)
+    handler = models.ForeignKey(TwitterSecret, to_field='handler', db_column='handler', blank=True, null=True)
+    msg=models.models.CharField(max_length=500, db_index=True)
+    created = models.DateTimeField(auto_now_add=True)
 
-
-
-
+    class Meta:
+        db_table = 'ap_twitter_dm'

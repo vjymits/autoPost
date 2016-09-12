@@ -162,6 +162,7 @@ class AutoPostAct:
         allowed_actions = ['tweet', 'follow', 'search']
         util.validate_allowed_params(allowed_actions, [self.action])
         d=ast.literal_eval(self.inputData)
+        d['retain'] = int(d.get('retain',0))
         if self.action == 'tweet':
             api.TweetList().post(d)
         elif self.action == 'follow':
